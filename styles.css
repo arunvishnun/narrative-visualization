@@ -1,0 +1,24 @@
+body {
+    color: #2c2c2c;
+    margin: 40px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: underline;
+}
+.chart {
+    width: 600px;
+    height: auto;
+    margin: 0px auto;
+}
+.back-button {
+    cursor: pointer;
+    fill: #666;
+}
+.chart-container {
+    display: flex;
+    justify-content: center;
+    margin: 80px 100px;
+}
