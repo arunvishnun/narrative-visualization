@@ -22,3 +22,31 @@ body {
     justify-content: center;
     margin: 80px 100px;
 }
+
+.tooltip {
+    position: absolute;
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.dot {
+    cursor: pointer;
+}
+
+.legend {
+    font-size: 14px;
+    display: flex;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+  .legend-color {
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+  }

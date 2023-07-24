@@ -1,12 +1,9 @@
+import { createScatterPlot } from './scatter-plot.js';
 
-(async function() {
-    // const data =  await d3.json("../data/full-data.json");
-    const data =  await d3.csv("../data/gdp-growth-data.csv");
-    
-    if (data) {
-        // Remove loading indicator once data is available.
-        d3.select('.loading-indicator').remove()
+// const URL = 'https://raw.githubusercontent.com/arunvishnun/narrative-visualization/main/data/gdp-growth-data.csv';
+const URL = '../data/data.json';
 
-        console.log(data);
-    }
+(async function () {
+    const data = await d3.json(URL);
+    createScatterPlot(data);
 })();
