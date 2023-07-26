@@ -48,12 +48,26 @@
       <option value="2021">2021</option>
       <option value="2022">2022</option>
     </select> -->
+    <div class="legend" id="legend"></div>
   </div>
   <div class="chart-container">
-    <svg id="scatterplot" width="800" height="600"></svg>
-    <div class="tooltip"></div>
-    <div class="legend" id="legend"></div>
+    <!-- Scatter plot -->
+    <div class="scatterplot-container" id="scatterplot-container"></div>
+      <svg id="scatterplot" width="800" height="600"></svg>
+      <div class="tooltip"></div>
+    </div>
 
+
+    <!-- Line chart -->
+    <div class="line-chart-container" id="line-chart-container">
+      <svg id="line-chart" width="800" height="600"></svg>
+    </div>
+    <br />
+    <!-- Bar chart -->
+    <div class="bar-chart-container" id="bar-chart-container">
+      <svg id="bar-chart" width="800" height="600"></svg>
+    </div>
   </div>
+  
 </body>
 </html>
