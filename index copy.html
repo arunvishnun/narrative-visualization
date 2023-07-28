@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Narrative Visualization</title>
+  <title>Top 10 Economies - Narrative Visualization</title>
+
   <link rel="stylesheet" href="./styles.css">
 
   <!-- include d3 librabry -->
@@ -11,14 +12,15 @@
 
   <!-- All javascripts plot visualization. index file act as entry point for other files. -->
   <script src="./scripts/index.js" type="module" async></script>
+
 </head>
 <body>
-
-  <div class="container">
-    <!-- Level 1: Scatter Plot -->
-    <div class="scatter-plot-container" id="scatter-plot-container">
-      <h1>World GDP vs Population</h1>
-      <h3>Select Year:</h3>
+  <header>
+    <h2 class="header">Top 10 Economies - Narrative Visualization</h2>
+  </header>
+  <div class="chart-container">
+    <div class="filter-container">
+      <label for="year"><b>Select Year:</b></label>
       <select id="year">
         <option value="2000" selected="selected">2000</option>
         <option value="2001">2001</option>
@@ -45,28 +47,25 @@
         <option value="2022">2022</option>
       </select>
       <div class="legend" id="legend"></div>
-      <svg id="scatterplot" width="860" height="600"></svg>
+    </div>
+    <!-- Scatter plot -->
+    <div class="scatterplot-container" id="scatterplot-container">
+      <svg id="scatterplot" width="1000" height="600"></svg>
       <div class="tooltip"></div>
     </div>
 
-    <!-- Level 2: Line Chart -->
-    <div class="line-chart-container hidden" id="line-chart-container">
-      <h2>GDP Growth Over Years</h2>
-      <svg id="line-chart" width="800" height="400"></svg>
-      <button id="back-button">Back to Scatter Plot</button>
-    </div>
 
-    <!-- Level 3: Bar Chart -->
-    <div class="bar-chart-container hidden" id="bar-chart-container">
-      <h2>Expenditure Breakdown</h2>
+    <!-- Line chart -->
+    <div class="line-chart-container" id="line-chart-container">
+      <svg id="line-chart" width="1000" height="600"></svg>
+    </div>
+    <br />
+    <!-- Bar chart -->
+    <div class="bar-chart-container" id="bar-chart-container">
       <svg id="bar-chart" width="600" height="600"></svg>
+      <div class="bar-chart-tooltip" id="bar-chart-tooltip"></div>
     </div>
   </div>
-
-  <button id="back-button" class="hidden">Back</button>
-
-  <!-- Tooltip element -->
-  <div class="tooltip" id="scatter-tooltip"></div>
-  <div class="tooltip" id="line-tooltip"></div>
+  
 </body>
 </html>
