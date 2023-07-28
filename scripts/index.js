@@ -1,4 +1,4 @@
-import { createCharts } from './charts.js';
+import { createCharts } from './app.js';
 
 // const URL = 'https://raw.githubusercontent.com/arunvishnun/narrative-visualization/main/data/gdp-growth-data.csv';
 const URL = 'https://raw.githubusercontent.com/arunvishnun/narrative-visualization/main/data/data.json';
