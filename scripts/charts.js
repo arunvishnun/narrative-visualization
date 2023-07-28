@@ -8,7 +8,7 @@ export const createCharts = (data) => {
   let previousState = null;
 
   const dataArray = filter(data);
-  
+
   // Define color scale
   const colorScale = d3.scaleOrdinal()
     .domain(dataArray.map(d => d.country))
@@ -20,7 +20,7 @@ export const createCharts = (data) => {
   showScatterPlot();
 
   function showScatterPlot() {
-    d3.select("#scatterplot-container").classed("hidden", false);
+    d3.select("#scatter-plot-container").classed("hidden", false);
     d3.select("#line-chart-container").classed("hidden", true);
     d3.select("#bar-chart-container").classed("hidden", true);
     d3.select("#back-button").classed("hidden", true);
@@ -32,7 +32,7 @@ export const createCharts = (data) => {
   }
 
   function createScatterPlot() {
-    
+
     // Set up the SVG container and margins
     const margin = { top: 50, right: 80, bottom: 80, left: 80 };
     const width = 860 - margin.left - margin.right;
@@ -46,15 +46,13 @@ export const createCharts = (data) => {
 
     // Define scales for x-axis (Population) and y-axis (GDP)
     const yScale = d3.scaleLinear()
-      .domain([-1 * d3.max(dataArray, d => d.gdpGrowth) -2, d3.max(dataArray, d => d.gdpGrowth) + 2])
+      .domain([-1 * d3.max(dataArray, d => d.gdpGrowth) - 2, d3.max(dataArray, d => d.gdpGrowth) + 2])
       .range([height, 0]);
 
-    
     const xScale = d3.scaleLog()
       .domain([d3.min(dataArray, d => d.population) - 10000000, d3.max(dataArray, d => d.population) + 1000000000])
-      // .domain([0 , d3.max(dataArray, d => d.population)])
       .range([0, width]);
-      
+
     // Create scatter plot
     let scatterPlot = svg.selectAll(".dot")
       .data(dataArray)
@@ -70,7 +68,7 @@ export const createCharts = (data) => {
       .on("click", showLineChart);
 
     svg.append("g")
-      .attr("transform", `translate(0, ${height/2})`)
+      .attr("transform", `translate(0, ${height / 2})`)
       .call(d3.axisBottom(xScale))
       .append("text")
       .attr("x", width / 2)
@@ -117,22 +115,21 @@ export const createCharts = (data) => {
 
     // Function to update the scatter plot based on the selected year
     function updateScatterPlot() {
-      console.log(filter(data))
       scatterPlot = svg.selectAll(".dot")
-          .data(filter(data));
+        .data(filter(data));
 
       scatterPlot.exit().remove();
 
       scatterPlot.enter()
-          .append("circle")
-          .attr("class", "dot")
-          .attr("r", 8)
-          .merge(scatterPlot)
-          .attr("cx", d => xScale(d.population))
-          .attr("cy", d => yScale(d.gdpGrowth))
-          .style("fill", (d, i) => getColorForCountry(d.country))
-          .on("mouseover", showTooltip)
-          .on("mouseout", hideTooltip);
+        .append("circle")
+        .attr("class", "dot")
+        .attr("r", 8)
+        .merge(scatterPlot)
+        .attr("cx", d => xScale(d.population))
+        .attr("cy", d => yScale(d.gdpGrowth))
+        .style("fill", (d, i) => getColorForCountry(d.country))
+        .on("mouseover", showTooltip)
+        .on("mouseout", hideTooltip);
 
       updateLegend();
     }
@@ -179,12 +176,12 @@ export const createCharts = (data) => {
     // Add event listener to update the scatter plot when the year input changes
     const yearInput = document.getElementById("year");
     yearInput.addEventListener("change", () => {
-        updateScatterPlot();
+      updateScatterPlot();
     });
 
     updateLegend();
   }
-  
+
   // Function to handle dot click event and show the line chart
   function showLineChart(event, d) {
     previousState = currentState;
@@ -194,7 +191,7 @@ export const createCharts = (data) => {
     d3.select("#scatter-plot-container").classed("hidden", true);
     d3.select("#line-chart-container").classed("hidden", false);
     d3.select("#bar-chart-container").classed("hidden", true);
-    d3.select("#back-button").classed("hidden", false); 
+    d3.select("#back-button").classed("hidden", false);
     currentState = "linechart";
 
     // Store the selected country and year
@@ -229,8 +226,6 @@ export const createCharts = (data) => {
     // Extract the GDP growth data for the selected country
     const selectedCountryData = data.filter(d => d.country === selectedCountry);
     const gdpGrowthData = selectedCountryData.map(d => ({ year: +d.year, gdpGrowth: +d.gdpGrowth, gdpCurrentUsDollar: +d.gdpCurrentUsDollar }));
-    
-    console.log(gdpGrowthData);
 
     // Define x and y scales for the line chart
     const xLineScale = d3.scaleLinear()
@@ -277,7 +272,7 @@ export const createCharts = (data) => {
           .style("opacity", 0);
       })
       .on("click", (event, d) => {
-        showBarChart(selectedCountry, d)
+        showBarChart(selectedCountry, d);
       });
 
     // Draw the line chart
@@ -323,7 +318,7 @@ export const createCharts = (data) => {
     d3.select("#scatter-plot-container").classed("hidden", true);
     d3.select("#line-chart-container").classed("hidden", true);
     d3.select("#bar-chart-container").classed("hidden", false);
-    d3.select("#back-button").classed("hidden", false); 
+    d3.select("#back-button").classed("hidden", false);
 
     // Call the createBarChart function on click to show the bar chart
     createBarChart(selectedCountry, d.year);
@@ -414,6 +409,7 @@ export const createCharts = (data) => {
 
   // Function to handle back button click
   function handleBackButtonClick() {
+
     if (previousState === "scatterplot") {
       // Show the scatter plot and hide the line chart and bar chart
       d3.select("#scatter-plot-container").classed("hidden", false);
@@ -436,10 +432,10 @@ export const createCharts = (data) => {
       d3.select("#back-button").classed("hidden", false);
       currentState = "barchart";
     }
+    previousState = currentState;
   }
 
   // Add event listener to the back button
   const backButton = document.getElementById("back-button");
   backButton.addEventListener("click", handleBackButtonClick);
 }
-
