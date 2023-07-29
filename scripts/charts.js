@@ -137,24 +137,36 @@ export const createCharts = (data) => {
     // Function to update the legend based on unique countries
     function updateLegend() {
       const uniqueCountries = Array.from(new Set(dataArray.map(d => d.country)));
-
+    
       const legend = d3.select("#legend")
         .selectAll(".legend-item")
         .data(uniqueCountries);
-
+    
       const legendItems = legend.enter()
         .append("div")
         .attr("class", "legend-item")
         .style("cursor", "pointer")
         .on("click", toggleCountry);
-
+    
+      // Split the legend into two columns
+      const numCols = 2;
+      const numRows = Math.ceil(uniqueCountries.length / numCols);
+      const colWidth = 140;
+      const colHeight = 20;
+    
+      legendItems
+        .style("float", (d, i) => i % numCols === 0 ? "left" : "right")
+        .style("clear", (d, i) => i % numCols === 0 ? "both" : "none")
+        .style("width", colWidth + "px")
+        .style("height", colHeight + "px");
+    
       legendItems.append("div")
         .attr("class", "legend-color")
         .style("background-color", (d, i) => d3.schemeCategory10[i % 10]);
-
+    
       legendItems.append("div")
         .text(d => d);
-
+    
       legend.exit().remove();
     }
 
@@ -342,7 +354,7 @@ export const createCharts = (data) => {
     // Set up the bar chart container
     const barSvg = d3.select("#bar-chart")
       .attr("width", 500)
-      .attr("height", 500);
+      .attr("height", 600);
 
     // Set up margins and dimensions for the bar chart
     const margin = { top: 100, right: 80, bottom: 100, left: 100 };
