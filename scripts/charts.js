@@ -131,7 +131,7 @@ export const createCharts = (data) => {
       const largest = economy.slice(0, 1)[0];
       const smallest = economy[economy.length-1];
       const annotations = [];
-      const uniqueCountries = Array.from(new Set(dataArray.map(d => d.country)));
+      const uniqueCountries = Array.from(new Set(economy.map(d => d.country)));
       
       if (uniqueCountries.includes(largest.country)) {
         annotations.push({
@@ -208,7 +208,7 @@ export const createCharts = (data) => {
     let selectedCountries = [];
     function updateLegend() {
       const uniqueCountries = Array.from(new Set(dataArray.map(d => d.country)));
-    
+      
       const legend = d3.select("#legend")
         .selectAll(".legend-item")
         .data(uniqueCountries);
@@ -250,7 +250,9 @@ export const createCharts = (data) => {
       d3.selectAll(".legend-item")
         .classed("selected", d => selectedCountries.includes(d));
 
-      addAnnotations(selectedYear);
+      const date = d3.select("#year").node().value;
+      
+      addAnnotations(date);
     }
 
     // Add event listener to update the scatter plot when the year input changes
@@ -298,7 +300,7 @@ export const createCharts = (data) => {
     d3.select("#line-chart").selectAll("*").remove();
 
     // Set up the line chart container and margins
-    const lineMargin = { top: 110, right: 20, bottom: 110, left: 180 };
+    const lineMargin = { top: 110, right: 20, bottom: 110, left: 200 };
     const lineWidth = 860 - lineMargin.left - lineMargin.right;
     const lineHeight = 600 - lineMargin.top - lineMargin.bottom;
 
