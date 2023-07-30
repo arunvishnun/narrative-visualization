@@ -112,9 +112,15 @@ h1, h2, h3 {
   cursor: pointer;
 }
 
+.dot.fade-out {
+  opacity: 0.2;
+}
+
+
 .hidden {
   display: none;
 }
+
 
 .header {
   background-color:whitesmoke;
