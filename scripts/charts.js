@@ -447,6 +447,7 @@ export const createCharts = (data) => {
       d3.select("#legend-container").classed("hidden", false);
       d3.select("#back-button").classed("hidden", true);
       currentState = "scatterplot";
+      previousState = null;
     } else if (previousState === "linechart") {
       // Show the line chart and hide the bar chart
       d3.select("#scatter-plot-container").classed("hidden", true);
@@ -454,6 +455,7 @@ export const createCharts = (data) => {
       d3.select("#bar-chart-container").classed("hidden", true);
       d3.select("#back-button").classed("hidden", false);
       currentState = "linechart";
+      previousState = "scatterplot";
     } else if (previousState === "barchart") {
       // Show the bar chart and hide the line chart
       d3.select("#scatter-plot-container").classed("hidden", true);
@@ -461,8 +463,9 @@ export const createCharts = (data) => {
       d3.select("#bar-chart-container").classed("hidden", false);
       d3.select("#back-button").classed("hidden", false);
       currentState = "barchart";
+      previousState = "linechart";
     }
-    previousState = currentState;
+    
   }
 
   // Add event listener to the back button
