@@ -369,7 +369,7 @@ export const createCharts = (data) => {
 
     // Create axes for the bar chart
     const xAxis = d3.axisBottom(xBarScale);
-    const yAxis = d3.axisLeft(yBarScale).ticks(5);
+    const yAxis = d3.axisLeft(yBarScale);
 
     // Append the bars to the bar chart
     const bars = barSvg.append("g")
