@@ -13,16 +13,32 @@
   <script src="./scripts/index.js" type="module" async></script>
 </head>
 <body>
-
+  <div id="printFullData"></div>
+  <div class="header">
+    <h1 class="header-title">GDP and Expenditure - Narrative Visualization</h1>
+  </div>
+  
   <div class="container">
+    <button id="back-button" class="hidden"> < Back</button>
     <!-- Level 1: Scatter Plot -->
     <div class="scatter-plot-container" id="scatter-plot-container">
-      <div class="header">
-        <h1 class="header-title">Top 10 Economies - Narrative Visualization</h1>
-        <p class="header-subtitle">Explore GDP and Population Data</p>
-      </div>
-      <div class="legend" id="legend"></div>
-      <hr />
+      <p class="header-subtitle">Explore GDP and Population Data</p>
+      <svg id="scatterplot" width="860" height="600"></svg>
+    </div>
+
+    <!-- Level 2: Line Chart -->
+    <div class="line-chart-container" id="line-chart-container">
+      <p class="header-subtitle">Percentage GDP Growth Over Years</p>
+      <svg id="line-chart" width="860" height="600"></svg>
+    </div>
+
+    <!-- Level 3: Bar Chart -->
+    <div class="bar-chart-container" id="bar-chart-container">
+      <p class="header-subtitle">Expenditure Breakdown</p>
+      <svg id="bar-chart" width="860" height="600"></svg>
+    </div>
+    
+    <div class="legend-container" id="legend-container">
       <div class="year-container">
         <span class="year-label">Select Year:</span>
         <select id="year">
@@ -51,33 +67,14 @@
           <option value="2022">2022</option>
         </select>
       </div>
-      <svg id="scatterplot" width="860" height="600"></svg>
-      <div class="tooltip"></div>
+      <div class="legend" id="legend"></div>
     </div>
-
-    <!-- Level 2: Line Chart -->
-    <div class="line-chart-container" id="line-chart-container">
-      <div class="header">
-        <h1 class="header-title">Top 10 Economies - Narrative Visualization</h1>
-        <p class="header-subtitle">Percentage GDP Growth Over Years</p>
-      </div>
-      <svg id="line-chart" width="800" height="400"></svg>
-    </div>
-
-    <!-- Level 3: Bar Chart -->
-    <div class="bar-chart-container" id="bar-chart-container">
-      <div class="header">
-        <h1 class="header-title">Top 10 Economies - Narrative Visualization</h1>
-        <p class="header-subtitle">Expenditure Breakdown</p>
-      </div>
-      <svg id="bar-chart" width="500" height="600"></svg>
-    </div>
+    
   </div>
-
-  <button id="back-button" class="hidden">Back</button>
 
   <!-- Tooltip element -->
   <div class="tooltip" id="scatter-tooltip"></div>
   <div class="tooltip" id="line-tooltip"></div>
+  <div class="tooltip" id="bar-chart-tooltip"></div>
 </body>
 </html>

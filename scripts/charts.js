@@ -12,7 +12,12 @@ export const createCharts = (data) => {
   // Define color scale
   const colorScale = d3.scaleOrdinal()
     .domain(dataArray.map(d => d.country))
-    .range(d3.schemeCategory10);
+    .range(d3.schemeSet3);
+
+  // Function to get a color for each country
+  function getColorForCountry(country) {
+    return colorScale(country);
+  }
 
   const formatGDP = d3.format(".2s");
 
@@ -34,7 +39,7 @@ export const createCharts = (data) => {
   function createScatterPlot() {
 
     // Set up the SVG container and margins
-    const margin = { top: 50, right: 80, bottom: 80, left: 80 };
+    const margin = { top: 50, right: 80, bottom: 80, left: 140 };
     const width = 860 - margin.left - margin.right;
     const height = 600 - margin.top - margin.bottom;
 
@@ -50,7 +55,7 @@ export const createCharts = (data) => {
       .range([height, 0]);
 
     const xScale = d3.scaleLog()
-      .domain([d3.min(dataArray, d => d.population) - 10000000, d3.max(dataArray, d => d.population) + 1000000000])
+      .domain([d3.min(dataArray, d => d.population), d3.max(dataArray, d => d.population)])
       .range([0, width]);
 
     // Create scatter plot
@@ -105,14 +110,6 @@ export const createCharts = (data) => {
       d3.select("#scatter-tooltip").style("opacity", 0);
     }
 
-    // Function to get a color for each country
-    function getColorForCountry(country) {
-      const colorMap = new Map();
-      const uniqueCountries = Array.from(new Set(dataArray.map(d => d.country)));
-      uniqueCountries.forEach((c, i) => colorMap.set(c, d3.schemeCategory10[i % 10]));
-      return colorMap.get(country);
-    }
-
     // Function to update the scatter plot based on the selected year
     function updateScatterPlot() {
       scatterPlot = svg.selectAll(".dot")
@@ -148,21 +145,13 @@ export const createCharts = (data) => {
         .style("cursor", "pointer")
         .on("click", toggleCountry);
     
-      // Split the legend into two columns
-      const numCols = 2;
-      const numRows = Math.ceil(uniqueCountries.length / numCols);
-      const colWidth = 140;
-      const colHeight = 20;
-    
       legendItems
-        .style("float", (d, i) => i % numCols === 0 ? "left" : "right")
-        .style("clear", (d, i) => i % numCols === 0 ? "both" : "none")
-        .style("width", colWidth + "px")
-        .style("height", colHeight + "px");
+        .style("display", "flex")
+        .style("align-items", "center");
     
       legendItems.append("div")
         .attr("class", "legend-color")
-        .style("background-color", (d, i) => d3.schemeCategory10[i % 10]);
+        .style("background-color", getColorForCountry);
     
       legendItems.append("div")
         .text(d => d);
@@ -203,7 +192,9 @@ export const createCharts = (data) => {
     d3.select("#scatter-plot-container").classed("hidden", true);
     d3.select("#line-chart-container").classed("hidden", false);
     d3.select("#bar-chart-container").classed("hidden", true);
+    d3.select("#legend-container").classed("hidden", true);
     d3.select("#back-button").classed("hidden", false);
+    
     currentState = "linechart";
 
     // Store the selected country and year
@@ -225,8 +216,8 @@ export const createCharts = (data) => {
     d3.select("#line-chart").selectAll("*").remove();
 
     // Set up the line chart container and margins
-    const lineMargin = { top: 20, right: 20, bottom: 50, left: 50 };
-    const lineWidth = 800 - lineMargin.left - lineMargin.right;
+    const lineMargin = { top: 20, right: 20, bottom: 50, left: 140 };
+    const lineWidth = 860 - lineMargin.left - lineMargin.right;
     const lineHeight = 600 - lineMargin.top - lineMargin.bottom;
 
     const lineSvg = d3.select("#line-chart")
@@ -353,13 +344,13 @@ export const createCharts = (data) => {
 
     // Set up the bar chart container
     const barSvg = d3.select("#bar-chart")
-      .attr("width", 500)
+      .attr("width", 860)
       .attr("height", 600);
 
     // Set up margins and dimensions for the bar chart
-    const margin = { top: 100, right: 80, bottom: 100, left: 100 };
-    const barWidth = 600 - margin.left - margin.right;
-    const barHeight = 500 - margin.top - margin.bottom;
+    const margin = { top: 100, right: 80, bottom: 120, left: 140 };
+    const barWidth = 860 - margin.left - margin.right;
+    const barHeight = 600 - margin.top - margin.bottom;
 
     // Create scales for the bar chart
     const xBarScale = d3.scaleBand()
