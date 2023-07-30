@@ -131,9 +131,8 @@ export const createCharts = (data) => {
       const largest = economy.slice(0, 1)[0];
       const smallest = economy[economy.length-1];
       const annotations = [];
-      const uniqueCountries = Array.from(new Set(economy.map(d => d.country)));
       
-      if (uniqueCountries.includes(largest.country)) {
+      if (selectedCountries.includes(largest.country) || selectedCountries.length ==0) {
         annotations.push({
           note: {
             title: `Largest Economy: ${largest.country}`,
@@ -150,7 +149,7 @@ export const createCharts = (data) => {
         });
       }
       
-      if (uniqueCountries.includes(smallest.country)) {
+      if (selectedCountries.includes(smallest.country) || selectedCountries.length ==0) {
         annotations.push({
           note: {
             title: `Smallest Economy: ${smallest.country}`,
