@@ -99,10 +99,10 @@ export const createCharts = (data) => {
       tooltip.style("opacity", 0.9)
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 25) + "px")
-        .html(`<strong>${d.country}</strong><br>
-        GDP growth: ${d.gdpGrowth} % <br>
-        GDP: ${formatGDP(d.gdpCurrentUsDollar).replace("G", "B")}<br>
-        Population: ${d3.format(".2s")(d.population)}`);
+        .html(`<strong class="blue">${d.country}</strong><br><br>
+        <strong>GDP growth:</strong> ${d.gdpGrowth} % <br>
+        <strong>GDP:</strong> ${formatGDP(d.gdpCurrentUsDollar).replace("G", "B")}<br>
+        <strong>Population:</strong> ${d3.format(".2s")(d.population)}`);
     }
 
     // Function to hide tooltip
@@ -228,7 +228,7 @@ export const createCharts = (data) => {
 
     // Extract the GDP growth data for the selected country
     const selectedCountryData = data.filter(d => d.country === selectedCountry);
-    const gdpGrowthData = selectedCountryData.map(d => ({ year: +d.year, gdpGrowth: +d.gdpGrowth, gdpCurrentUsDollar: +d.gdpCurrentUsDollar }));
+    const gdpGrowthData = selectedCountryData.map(d => ({ country: d.country, year: +d.year, gdpGrowth: +d.gdpGrowth, gdpCurrentUsDollar: +d.gdpCurrentUsDollar }));
 
     // Define x and y scales for the line chart
     const xLineScale = d3.scaleLinear()
@@ -259,14 +259,17 @@ export const createCharts = (data) => {
       .attr("class", "data-circle")
       .attr("cx", d => xLineScale(d.year))
       .attr("cy", d => yLineScale(d.gdpGrowth))
-      .attr("r", 5)
+      .attr("r", 6)
       .attr("fill", colorScale(selectedCountry))
       .on("mouseover", (event, d) => {
         lineTooltip.transition()
-          .duration(50)
           .style("opacity", 0.9);
-        lineTooltip.html(`Year: ${d.year}<br>GDP Growth: ${d.gdpGrowth}%<br>GDP: ${formatGDP(d.gdpCurrentUsDollar).replace("G", "B")}`)
-          .style("left", (event.pageX + 10) + "px")
+        lineTooltip.html(
+          `<strong class="blue">${d.country}</strong><br><br>
+          <strong>Year:</strong> ${d.year}<br>
+          <strong>GDP Growth:</strong> ${d.gdpGrowth}%<br>
+          <strong>GDP:</strong> ${formatGDP(d.gdpCurrentUsDollar).replace("G", "B")}`)
+          .style("left", (event.pageX + 16) + "px")
           .style("top", (event.pageY - 28) + "px");
       })
       .on("mouseout", () => {
@@ -298,7 +301,7 @@ export const createCharts = (data) => {
     // Add x-axis label
     lineSvg.append("text")
       .attr("x", lineWidth / 2)
-      .attr("y", lineHeight + lineMargin.bottom - 10)
+      .attr("y", lineHeight + lineMargin.bottom) 
       .attr("fill", "#000")
       .attr("text-anchor", "middle")
       .text("Year");
@@ -307,7 +310,7 @@ export const createCharts = (data) => {
     lineSvg.append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", -lineHeight / 2)
-      .attr("y", -lineMargin.left + 15)
+      .attr("y", -lineMargin.left + 80)
       .attr("fill", "#000")
       .attr("text-anchor", "middle")
       .text("GDP Growth (%)");
@@ -335,11 +338,11 @@ export const createCharts = (data) => {
     // Filter data for the selected country and year
     const selectedCountryData = data.filter(d => d.country === country && d.year == year)[0];
     const expenditures = [
-      { label: "Education Expenditure", value: selectedCountryData.educationExpenditure },
-      { label: "Military Expenditure", value: selectedCountryData.militaryExpenditure },
-      { label: "Research and Development Expenditure", value: selectedCountryData.researchAndDevelopmentExpenditure },
-      { label: "Health Expenditure", value: selectedCountryData.healthExpenditure },
-      { label: "Total Expense", value: selectedCountryData.totalExpense }
+      { label: "Research and Development Expenditure", value: selectedCountryData.researchAndDevelopmentExpenditure, country: selectedCountryData.country, year: selectedCountryData.year},
+      { label: "Education Expenditure", value: selectedCountryData.educationExpenditure, country: selectedCountryData.country, year: selectedCountryData.year },
+      { label: "Military Expenditure", value: selectedCountryData.militaryExpenditure, country: selectedCountryData.country, year: selectedCountryData.year },
+      { label: "Health Expenditure", value: selectedCountryData.healthExpenditure, country: selectedCountryData.country, year: selectedCountryData.year },
+      { label: "Total Expense", value: selectedCountryData.totalExpense, country: selectedCountryData.country, year: selectedCountryData.year }
     ];
 
     // Set up the bar chart container
@@ -348,7 +351,7 @@ export const createCharts = (data) => {
       .attr("height", 600);
 
     // Set up margins and dimensions for the bar chart
-    const margin = { top: 100, right: 80, bottom: 120, left: 140 };
+    const margin = { top: 100, right: 80, bottom: 140, left: 140 };
     const barWidth = 860 - margin.left - margin.right;
     const barHeight = 600 - margin.top - margin.bottom;
 
@@ -395,11 +398,32 @@ export const createCharts = (data) => {
       .attr("transform", `translate(${margin.left}, ${margin.top})`)
       .call(yAxis);
 
+    // Add x-axis label
+    barSvg.append("text")
+      .attr("x", barWidth / 2 + 150)
+      .attr("y", barHeight + margin.bottom + 40)
+      .attr("fill", "#000")
+      .attr("text-anchor", "middle")
+      .text("Expenditures");
+
+    // Add y-axis label
+    barSvg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -barHeight / 2)
+      .attr("y", -barHeight + 450)
+      .attr("fill", "#000")
+      .attr("text-anchor", "end")
+      .text("Expenditure (% GDP)");
+
     const barChartTooltip = d3.select("#bar-chart-tooltip");
     // Add tooltip to the bars
     bars.on("mouseover", (event, d) => {
       barChartTooltip.style("visibility", "visible")
-        .html(`${d.label}: ${d.value.toFixed(2)}%`)
+        .html(`
+          <strong class="blue">${d.country}</strong><br /><br />
+          <strong>${d.label}:</strong> ${d.value.toFixed(2)}% <br />
+          <strong>Year:</strong> ${d.year}
+        `)
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 28) + "px");
     })
@@ -418,6 +442,7 @@ export const createCharts = (data) => {
       d3.select("#scatter-plot-container").classed("hidden", false);
       d3.select("#line-chart-container").classed("hidden", true);
       d3.select("#bar-chart-container").classed("hidden", true);
+      d3.select("#legend-container").classed("hidden", false);
       d3.select("#back-button").classed("hidden", true);
       currentState = "scatterplot";
     } else if (previousState === "linechart") {
