@@ -39,9 +39,9 @@ export const createCharts = (data) => {
   function createScatterPlot() {
 
     // Set up the SVG container and margins
-    const margin = { top: 50, right: 80, bottom: 80, left: 140 };
-    const width = 860 - margin.left - margin.right;
-    const height = 600 - margin.top - margin.bottom;
+    const margin = { top: 80, right: 60, bottom: 120, left: 240 };
+    const width = 1200 - margin.left - margin.right;
+    const height = 800 - margin.top - margin.bottom;
 
     const svg = d3.select("#scatterplot")
       .attr("width", width + margin.left + margin.right)
@@ -112,6 +112,77 @@ export const createCharts = (data) => {
       d3.select("#scatter-tooltip").style("opacity", 0);
     }
 
+    // Function to add annotations for the top 3 economies
+    function addAnnotations(year) {
+      const y = year ? year : "2011";
+      const economy = data.filter((d) => {
+        return d.year == y && 
+          d.gdpCurrentUsDollar && 
+          d.researchAndDevelopmentExpenditure && 
+          d.educationExpenditure && 
+          d.militaryExpenditure && 
+          d.healthExpenditure && 
+          d.totalExpense
+        })
+        .sort((a, b) => {
+          return b.gdpCurrentUsDollar - a.gdpCurrentUsDollar
+        })
+        
+      const largest = economy.slice(0, 1)[0];
+      const smallest = economy[economy.length-1];
+      const annotations = [];
+      const uniqueCountries = Array.from(new Set(dataArray.map(d => d.country)));
+      
+      if (uniqueCountries.includes(largest.country)) {
+        annotations.push({
+          note: {
+            title: `Largest Economy: ${largest.country}`,
+            label: `GDP: ${formatGDP(largest.gdpCurrentUsDollar).replace("G", "B")}`,
+            align: "middle",
+            wrap: 250,
+          },
+          data: { country: largest.country, gdpGrowth: largest.gdpGrowth, population: largest.population },
+          dx: -30,
+          dy: 250,
+          subject: { radius: 2 },
+          color: "#0959b1",
+          type: d3.annotationCalloutCircle,
+        });
+      }
+      
+      if (uniqueCountries.includes(smallest.country)) {
+        annotations.push({
+          note: {
+            title: `Smallest Economy: ${smallest.country}`,
+            label: `GDP: ${formatGDP(smallest.gdpCurrentUsDollar).replace("G", "B")}`,
+            align: "middle",
+            wrap: 250,
+          },
+          data: { country: smallest.country, gdpGrowth: smallest.gdpGrowth, population: smallest.population },
+          dx: 120,
+          dy: 200,
+          
+          subject: { radius: 2 },
+          color: "#0959b1",
+          type: d3.annotationCalloutCircle,
+        });
+      }
+
+      const makeAnnotations = d3.annotation()
+        .notePadding(35)
+        .type(d3.annotationLabel)
+        .annotations(annotations)
+        .accessors({ x: d => xScale(d.population), y: d => yScale(d.gdpGrowth) });
+      
+      // d3.select(".annotation-group").html("")
+      svg.select(".annotation-group").remove();
+      
+      svg.append("g")
+        .attr("class", "annotation-group")
+        .call(makeAnnotations);
+      
+    }
+
     // Function to update the scatter plot based on the selected year
     function updateScatterPlot() {
       scatterPlot = svg.selectAll(".dot")
@@ -133,7 +204,7 @@ export const createCharts = (data) => {
       updateLegend();
     }
 
-    // Function to update the legend based on unique countries
+    // Function to update the legend
     let selectedCountries = [];
     function updateLegend() {
       const uniqueCountries = Array.from(new Set(dataArray.map(d => d.country)));
@@ -144,8 +215,8 @@ export const createCharts = (data) => {
     
       const legendItems = legend.enter()
         .append("div")
-        .attr("class", "legend-item selected") // Set default opacity to 1 and add "selected" class
-        .on("click", toggleCountry); // Add click event listener
+        .attr("class", "legend-item selected")
+        .on("click", toggleCountry); // on a legend click, enable/disable countries and in turn update scatter plot
     
       legendItems
         .style("display", "flex")
@@ -178,15 +249,20 @@ export const createCharts = (data) => {
       scatterPlot.classed("hidden", d => !selectedCountries.includes(d.country));
       d3.selectAll(".legend-item")
         .classed("selected", d => selectedCountries.includes(d));
+
+      addAnnotations(selectedYear);
     }
 
     // Add event listener to update the scatter plot when the year input changes
     const yearInput = document.getElementById("year");
-    yearInput.addEventListener("change", () => {
+    yearInput.addEventListener("change", (e) => {
       updateScatterPlot();
+      addAnnotations(e.target.value);
     });
 
     updateLegend();
+    // Call the addAnnotations function
+    addAnnotations(selectedYear);
   }
 
   // Function to handle dot click event and show the line chart
@@ -222,7 +298,7 @@ export const createCharts = (data) => {
     d3.select("#line-chart").selectAll("*").remove();
 
     // Set up the line chart container and margins
-    const lineMargin = { top: 20, right: 20, bottom: 50, left: 140 };
+    const lineMargin = { top: 110, right: 20, bottom: 110, left: 180 };
     const lineWidth = 860 - lineMargin.left - lineMargin.right;
     const lineHeight = 600 - lineMargin.top - lineMargin.bottom;
 
@@ -233,7 +309,7 @@ export const createCharts = (data) => {
       .attr("transform", `translate(${lineMargin.left},${lineMargin.top})`);
 
     // Extract the GDP growth data for the selected country
-    const selectedCountryData = data.filter(d => d.country === selectedCountry);
+    const selectedCountryData = data.filter(d => d.country === selectedCountry && +d.year > 2010 && +d.year < 2021);
     const gdpGrowthData = selectedCountryData.map(d => ({ country: d.country, year: +d.year, gdpGrowth: +d.gdpGrowth, gdpCurrentUsDollar: +d.gdpCurrentUsDollar }));
 
     // Define x and y scales for the line chart
@@ -320,6 +396,35 @@ export const createCharts = (data) => {
       .attr("fill", "#000")
       .attr("text-anchor", "middle")
       .text("GDP Growth (%)");
+
+
+    // Find the peak point (maximum GDP growth) for the selected country
+    const peakPoint = gdpGrowthData.reduce((max, d) => (d.gdpGrowth > max.gdpGrowth ? d : max), gdpGrowthData[0]);
+
+    // Define the annotation for the peak point
+    const peakAnnotation = {
+      note: {
+        label: `${peakPoint.gdpGrowth}%`,
+        title: "Peak GDP Growth",
+        wrap: 300,
+      },
+      x: xLineScale(peakPoint.year),
+      y: yLineScale(peakPoint.gdpGrowth),
+      dx: -30,
+      dy: -30,
+      color: "#0959b1",
+      type: d3.annotationCalloutElbow,
+      connector: { end: "arrow" },
+    };
+
+    // Create the d3-annotation instance
+    const makeAnnotation = d3.annotation().annotations([peakAnnotation]);
+
+    // Add the annotation group to the line chart
+    lineSvg.append("g")
+      .attr("class", "annotation-group")
+      .call(makeAnnotation);
+   
   }
 
   function showBarChart(selectedCountry, d) {
@@ -342,7 +447,11 @@ export const createCharts = (data) => {
   // Function to create and update the bar chart
   function createBarChart(country, year) {
     // Filter data for the selected country and year
-    const selectedCountryData = data.filter(d => d.country === country && d.year == year)[0];
+    const selectedCountryData = data.filter(d => {
+      return d.country === country && 
+              d.year == year;
+    })[0];
+
     const expenditures = [
       { label: "Research and Development Expenditure", value: selectedCountryData.researchAndDevelopmentExpenditure, country: selectedCountryData.country, year: selectedCountryData.year},
       { label: "Education Expenditure", value: selectedCountryData.educationExpenditure, country: selectedCountryData.country, year: selectedCountryData.year },
@@ -350,7 +459,7 @@ export const createCharts = (data) => {
       { label: "Health Expenditure", value: selectedCountryData.healthExpenditure, country: selectedCountryData.country, year: selectedCountryData.year },
       { label: "Total Expense", value: selectedCountryData.totalExpense, country: selectedCountryData.country, year: selectedCountryData.year }
     ];
-
+    
     // Set up the bar chart container
     d3.select("#bar-chart").html("")
     const barSvg = d3.select("#bar-chart")

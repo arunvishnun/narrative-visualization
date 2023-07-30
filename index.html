@@ -7,8 +7,9 @@
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="./styles.css" />
 
-  <!-- include d3 librabry -->
+  <!-- include d3 and d3-anotation librabry -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.5.1/d3-annotation.min.js"></script>
 
   <!-- All javascripts plot visualization. index file act as entry point for other files. -->
   <!-- FYI - This is NOT an external library, but just to split up the code for easy debugging -->
@@ -25,7 +26,7 @@
     <!-- Level 1: Scatter Plot -->
     <div class="scatter-plot-container" id="scatter-plot-container">
       <p class="header-subtitle">Explore GDP and Population Data</p>
-      <svg id="scatterplot" width="860" height="600"></svg>
+      <svg id="scatterplot" width="860" height="860"></svg>
     </div>
 
     <!-- Level 2: Line Chart -->
@@ -44,7 +45,7 @@
       <div class="year-container">
         <span class="year-label">Select Year:</span>
         <select id="year">
-          <option value="2000" selected="selected">2000</option>
+          <!-- <option value="2000" selected="selected">2000</option>
           <option value="2001">2001</option>
           <option value="2002">2002</option>
           <option value="2003">2003</option>
@@ -54,8 +55,8 @@
           <option value="2007">2007</option>
           <option value="2008">2008</option>
           <option value="2009">2009</option>
-          <option value="2010">2010</option>
-          <option value="2011">2011</option>
+          <option value="2010">2010</option> -->
+          <option value="2011" selected="selected">2011</option>
           <option value="2012">2012</option>
           <option value="2013">2013</option>
           <option value="2014">2014</option>
@@ -65,8 +66,8 @@
           <option value="2018">2018</option>
           <option value="2019">2019</option>
           <option value="2020">2020</option>
-          <option value="2021">2021</option>
-          <option value="2022">2022</option>
+          <!-- <option value="2021">2021</option>
+          <option value="2022">2022</option> -->
         </select>
       </div>
       <hr />
