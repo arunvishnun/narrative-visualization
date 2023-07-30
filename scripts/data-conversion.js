@@ -1,10 +1,10 @@
 // Note: This file is not used in visualization.
 
 
-// The available data was not ready for direct use with d3. So this program was written and used only once to do data cleaning/formatting. 
+// The available data was not ready for direct use to plot charts. So this program was written and used only once to do data cleaning/formatting. 
 
 // The JSON created using this code is saved as data.json and is used for plotting SVGs
-const cleanData = (fullData) => {
+export const cleanData = (fullData) => {
   let dataArray = [];
   const dataArrayMap = new Map()
 
@@ -91,6 +91,15 @@ const cleanData = (fullData) => {
   });
 
   return dataArray
+}
+
+
+// Used only once to format data
+export async function extractFullDataAndFormat() {
+  const csvURL = 'https://raw.githubusercontent.com/arunvishnun/narrative-visualization/main/data/gdp-and-expenditure-all-countries.csv';
+  const data = await d3.csv(csvURL);
+  console.log(cleanData(data));
+  document.getElementById("printFullData").innerHTML = JSON.stringify(cleanData(data));
 }
 
 // Metadata info. These are values selected from WDI database. Indiacates the code for various values plotted.
