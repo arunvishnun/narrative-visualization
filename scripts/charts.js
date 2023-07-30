@@ -352,6 +352,7 @@ export const createCharts = (data) => {
     ];
 
     // Set up the bar chart container
+    d3.select("#bar-chart").html("")
     const barSvg = d3.select("#bar-chart")
       .attr("width", 860)
       .attr("height", 600);
