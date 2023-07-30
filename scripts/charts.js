@@ -79,6 +79,7 @@ export const createCharts = (data) => {
       .attr("x", width / 2)
       .attr("y", 40)
       .attr("fill", "#000")
+      .attr("font-size", "16px")
       .attr("text-anchor", "middle")
       .text("Population");
 
@@ -90,6 +91,7 @@ export const createCharts = (data) => {
       .attr("y", -60)
       .attr("x", -height / 2)
       .attr("fill", "#000")
+      .attr("font-size", "16px")
       .attr("text-anchor", "middle")
       .text("GDP (Gross Domestic Product) Growth %");
 
@@ -301,7 +303,7 @@ export const createCharts = (data) => {
     // Add x-axis label
     lineSvg.append("text")
       .attr("x", lineWidth / 2)
-      .attr("y", lineHeight + lineMargin.bottom) 
+      .attr("y", yLineScale(0) + lineMargin.bottom) 
       .attr("fill", "#000")
       .attr("text-anchor", "middle")
       .text("Year");
