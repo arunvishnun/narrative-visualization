@@ -134,6 +134,7 @@ export const createCharts = (data) => {
     }
 
     // Function to update the legend based on unique countries
+    let selectedCountries = [];
     function updateLegend() {
       const uniqueCountries = Array.from(new Set(dataArray.map(d => d.country)));
     
@@ -143,9 +144,8 @@ export const createCharts = (data) => {
     
       const legendItems = legend.enter()
         .append("div")
-        .attr("class", "legend-item")
-        .style("cursor", "pointer")
-        .on("click", toggleCountry);
+        .attr("class", "legend-item selected") // Set default opacity to 1 and add "selected" class
+        .on("click", toggleCountry); // Add click event listener
     
       legendItems
         .style("display", "flex")
@@ -164,16 +164,20 @@ export const createCharts = (data) => {
     // Function to toggle visibility of a country in the scatter plot
     function toggleCountry(event) {
       const country = event.target.textContent;
-      const selectedDots = scatterPlot.filter(d => d.country === country);
-
-      const currentDisplay = selectedDots.style("display");
-      const newDisplay = currentDisplay === "none" ? "block" : "none";
-
-      selectedDots.style("display", newDisplay);
-
-      // Fade out the legend item when toggled off
-      const legendItem = d3.select(event.target.parentNode);
-      legendItem.classed("legend-item-hidden", newDisplay === "none");
+      const isSelected = selectedCountries.includes(country);
+    
+      if (isSelected) {
+        // Country is already selected, so remove it from the selected countries array
+        selectedCountries = selectedCountries.filter(c => c !== country);
+      } else {
+        // Country is not selected, so add it to the selected countries array
+        selectedCountries.push(country);
+      }
+    
+      // Highlight the selected countries in the scatter plot and fade out the rest
+      scatterPlot.classed("hidden", d => !selectedCountries.includes(d.country));
+      d3.selectAll(".legend-item")
+        .classed("selected", d => selectedCountries.includes(d));
     }
 
     // Add event listener to update the scatter plot when the year input changes
