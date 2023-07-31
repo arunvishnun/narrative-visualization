@@ -39,9 +39,9 @@ export const createCharts = (data) => {
   function createScatterPlot() {
 
     // Set up the SVG container and margins
-    const margin = { top: 130, right: 60, bottom: 120, left: 240 };
+    const margin = { top: 100, right: 60, bottom: 120, left: 240 };
     const width = 1200 - margin.left - margin.right;
-    const height = 800 - margin.top - margin.bottom;
+    const height = 860 - margin.top - margin.bottom;
 
     const svg = d3.select("#scatterplot")
       .attr("width", width + margin.left + margin.right)
