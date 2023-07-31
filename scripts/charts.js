@@ -215,7 +215,7 @@ export const createCharts = (data) => {
       const legendItems = legend.enter()
         .append("div")
         .attr("class", "legend-item selected")
-        .on("click", toggleCountry); // on a legend click, enable/disable countries and in turn update scatter plot
+        // .on("click", toggleCountry); // on a legend click, enable/disable countries and in turn update scatter plot
     
       legendItems
         .style("display", "flex")
