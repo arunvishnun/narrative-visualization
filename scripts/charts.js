@@ -55,7 +55,7 @@ export const createCharts = (data) => {
       .range([height, 0]);
 
     const xScale = d3.scaleLog()
-      .domain([d3.min(dataArray, d => d.population), d3.max(dataArray, d => d.population)])
+      .domain([80000, d3.max(dataArray, d => d.population)])
       .range([0, width]);
 
     // Create scatter plot
